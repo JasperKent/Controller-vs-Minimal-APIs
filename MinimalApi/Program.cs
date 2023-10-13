@@ -26,6 +26,6 @@ app.UseHttpsRedirection();
 
 app.MapBookReviews();
 
-app.MapBookReviewEndpoints();
+//app.MapBookReviewEndpoints();
 
 app.Run();
