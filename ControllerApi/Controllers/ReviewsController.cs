@@ -22,6 +22,10 @@ namespace ControllerApi.Controllers
             _reviewContext = reviewContext;
         }
 
+        /// <summary>
+        /// Gets all book reviews
+        /// </summary>
+        /// <returns>The collection of reviews</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BookReview>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -30,6 +34,11 @@ namespace ControllerApi.Controllers
             return Ok(await _reviewContext.BookReviews.ToArrayAsync());
         }
 
+        /// <summary>
+        /// Gets a single book review by id
+        /// </summary>
+        /// <param name="id">The id of the book review</param>
+        /// <returns>The book review</returns>
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookReview))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -44,6 +53,10 @@ namespace ControllerApi.Controllers
                 return Ok(result);
         }
 
+        /// <summary>
+        /// Gets a summary of the reviews for each book with an average rating
+        /// </summary>
+        /// <returns>The summary of book reviews</returns>
         [HttpGet("summary")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BookReview>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -63,6 +76,11 @@ namespace ControllerApi.Controllers
             return Ok(summaries);
         }
 
+        /// <summary>
+        /// Creates a new book review
+        /// </summary>
+        /// <param name="review">The new book review</param>
+        /// <returns>A Created response</returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(int))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -80,6 +98,12 @@ namespace ControllerApi.Controllers
             return CreatedAtAction(nameof(Get), new { id = review.Id }, review);
         }
 
+        /// <summary>
+        /// Modifies and existing book review
+        /// </summary>
+        /// <param name="id">The id of the review to modify</param>
+        /// <param name="review">The updated review</param>
+        /// <returns>Ok or NotFound</returns>
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -106,6 +130,11 @@ namespace ControllerApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes a book review
+        /// </summary>
+        /// <param name="id">The id of the review to delete</param>
+        /// <returns>Ok or NotFound</returns>
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

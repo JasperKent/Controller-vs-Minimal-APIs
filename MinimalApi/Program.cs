@@ -25,7 +25,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapBookReviews();
-
-//app.MapBookReviewEndpoints();
+//app.MapBookReviewsWithLambdas();
 
 app.Run();
