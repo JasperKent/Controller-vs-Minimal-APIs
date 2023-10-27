@@ -133,6 +133,7 @@ namespace ControllerApi.Controllers
         /// <summary>
         /// Deletes a book review
         /// </summary>
+        /// <remarks>More detailed</remarks>
         /// <param name="id">The id of the review to delete</param>
         /// <returns>Ok or NotFound</returns>
         [HttpDelete("{id:int}")]

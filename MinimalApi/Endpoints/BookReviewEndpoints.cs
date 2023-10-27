@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MinimalApi.Endpoints
 {
-    public static class BookReviewEndpoints
+    internal static class BookReviewEndpoints
     {
         private static bool ValidateReview(BookReview bookReview)
         {
@@ -14,11 +14,23 @@ namespace MinimalApi.Endpoints
                 && bookReview.Rating <= 5;
         }
 
+        /// <summary>
+        /// Gets all book reviews
+        /// </summary>
+        /// <returns>The collection of reviews</returns>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BookReview>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public static async Task<IResult> GetAll(ReviewContext reviewContext)
         {
             return TypedResults.Ok(await reviewContext.BookReviews.ToArrayAsync());
         }
 
+        /// <summary>
+        /// Gets a summary of the reviews for each book with an average rating
+        /// </summary>
+        /// <returns>The summary of book reviews</returns>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BookReview>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public static async Task<IResult> Summary(ReviewContext reviewContext)
         {
             var summaries = await reviewContext.BookReviews.GroupBy(r => r.Title).Select(g =>
@@ -35,6 +47,14 @@ namespace MinimalApi.Endpoints
             return TypedResults.Ok(summaries);
         }
 
+        /// <summary>
+        /// Gets a single book review by id
+        /// </summary>
+        /// <param name="id">The id of the book review</param>
+        /// <returns>The book review</returns>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookReview))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public static async Task<IResult> GetOne(ReviewContext reviewContext, int id)
         {
             var result = await reviewContext.BookReviews.FindAsync(id);
@@ -45,6 +65,15 @@ namespace MinimalApi.Endpoints
                 return TypedResults.Ok(result);
         }
 
+        /// <summary>
+        /// Creates a new book review
+        /// </summary>
+        /// <param name="review">The new book review</param>
+        /// <returns>A Created response</returns>
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(int))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public static async Task<IResult> Post(ReviewContext reviewContext, [FromBody] BookReview review)
         {
             if (!ValidateReview(review))
@@ -60,6 +89,17 @@ namespace MinimalApi.Endpoints
                 value: review);
         }
 
+        /// <summary>
+        /// Modifies and existing book review
+        /// </summary>
+        /// <param name="id">The id of the review to modify</param>
+        /// <param name="review">The updated review</param>
+        /// <returns>Ok or NotFound</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public static async Task<IResult> Put(ReviewContext reviewContext, int id, [FromBody] BookReview review)
         {
             if (!ValidateReview(review))
@@ -80,6 +120,14 @@ namespace MinimalApi.Endpoints
             }
         }
 
+        /// <summary>
+        /// Deletes a book review
+        /// </summary>
+        /// <param name="id">The id of the review to delete</param>
+        /// <returns>Ok or NotFound</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public static async Task<IResult> Delete(ReviewContext reviewContext, int id)
         {
             var result = await reviewContext.BookReviews.FindAsync(id);
